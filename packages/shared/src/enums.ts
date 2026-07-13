@@ -39,6 +39,24 @@ export type FetchErrorKind = z.infer<typeof fetchErrorKindSchema>;
 export const messageJobStateSchema = z.enum(["queued", "generating", "done", "failed"]);
 export type MessageJobState = z.infer<typeof messageJobStateSchema>;
 
+/**
+ * external_data ブロックの kind 属性（design-detail 3.2 — 決定 E6）。
+ * analysis（収集ページ分類）→ apps/api → prompt（external_data タグ生成）を跨ぐ契約のため
+ * shared に置く（型契約の唯一の置き場 — basic-design 2.1。PR3 の申し送りの判断）。
+ * ページ系 4 値（corporate_site / news / recruit / article）は analysis の
+ * CollectedPageKind と同じ文字列リテラル。signal は Signal 本文、dossier は
+ * メッセージ生成時のドシエ由来テキストに prompt 側で付与する。
+ */
+export const externalDataKindSchema = z.enum([
+  "corporate_site",
+  "news",
+  "recruit",
+  "article",
+  "signal",
+  "dossier",
+]);
+export type ExternalDataKind = z.infer<typeof externalDataKindSchema>;
+
 /** 出力検証 V2〜V6 の警告コード（design-detail 3.5 — 決定 E8） */
 export const warningCodeSchema = z.enum([
   "SKELETON_MISSING",

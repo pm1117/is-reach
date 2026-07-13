@@ -3,6 +3,7 @@ import {
   deepDiveJobStateSchema,
   entryStatusSchema,
   errorCodeSchema,
+  externalDataKindSchema,
   fetchErrorKindSchema,
   messageJobStateSchema,
   roleSchema,
@@ -29,6 +30,7 @@ describe("enum スキーマ", () => {
       ],
     ],
     [messageJobStateSchema, ["queued", "generating", "done", "failed"]],
+    [externalDataKindSchema, ["corporate_site", "news", "recruit", "article", "signal", "dossier"]],
   ] as const)("定義された全値を受理する", (schema, values) => {
     for (const value of values) {
       expect(schema.parse(value)).toBe(value);
@@ -42,6 +44,7 @@ describe("enum スキーマ", () => {
     expect(deepDiveJobStateSchema.safeParse("running").success).toBe(false);
     expect(fetchErrorKindSchema.safeParse("dns_error").success).toBe(false);
     expect(messageJobStateSchema.safeParse("collecting").success).toBe(false);
+    expect(externalDataKindSchema.safeParse("blog").success).toBe(false);
     expect(roleSchema.safeParse("").success).toBe(false);
     expect(roleSchema.safeParse(null).success).toBe(false);
   });
