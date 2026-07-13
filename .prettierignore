@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.turbo/
+coverage/
+pnpm-lock.yaml
+.firecrawl/
+
+# ドキュメント・エージェント定義・CI 定義は本 lint 基盤の整形対象外
+# （変更時は各担当 PR で扱う — 1 PR = 1 関心事）
+*.md
+.claude/
+.github/

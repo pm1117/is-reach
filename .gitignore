@@ -1,0 +1,20 @@
+# 依存・ビルド成果物
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Turborepo
+.turbo/
+
+# テスト
+coverage/
+
+# 環境変数（秘密情報はコミットしない）
+.env
+.env.*
+!.env.example
+
+# ツール・OS
+.firecrawl/
+.DS_Store
+*.log
