@@ -1,0 +1,30 @@
+{
+  "name": "@is-reach/crawler",
+  "version": "0.1.0",
+  "private": true,
+  "description": "外部サイトへの HTTP アクセスの唯一の実装点（robots.txt 遵守・レート制限・HTTP エラー分類 — 決定 E10 / E12）。DB 書き込み・LLM 呼び出しはしない（basic-design 2.1）。",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "pnpm run typecheck && vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@is-reach/shared": "workspace:*",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}
