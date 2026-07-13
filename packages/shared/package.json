@@ -1,0 +1,29 @@
+{
+  "name": "@is-reach/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "is-reach の型契約・ドメイン型の唯一の置き場（zod スキーマから型を導出 — 決定 E17）。実行時 I/O 禁止・他 workspace へ依存しない。",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "pnpm run typecheck && vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}

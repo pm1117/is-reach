@@ -4,7 +4,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## リポジトリの現状
 
-実装コードは未着手（フェーズ5 で着手）。設計ドキュメント（`docs/requirements.md` → `basic-design.md` → `design-detail.md` / `ui-spec.md` → `pr-plan.md`）は承認済みで、`.claude/`（skills・agents）と GitHub Actions（Claude 自動レビュー）が整備済み。ビルド／リント／テストコマンドは PR1（モノレポ土台）で確定した時点でこのファイルに追記してください。
+実装フェーズ（フェーズ5）進行中。設計ドキュメント（`docs/requirements.md` → `basic-design.md` → `design-detail.md` / `ui-spec.md` → `pr-plan.md`）は承認済みで、`.claude/`（skills・agents）と GitHub Actions（Claude 自動レビュー）が整備済み。PR1 でモノレポ土台（pnpm workspace + Turborepo）と `packages/shared`（型契約）が導入済み。`packages/crawler` / `analysis` / `prompt`、`apps/web` / `api` は未実装（`docs/pr-plan.md` の PR2 以降）。
+
+## 開発コマンド
+
+pnpm workspace + Turborepo のモノレポ。pnpm のバージョンはルート `package.json` の `packageManager` で固定（corepack 推奨: `corepack pnpm <cmd>` で pinned 版が使われる）。
+
+```bash
+pnpm install   # 依存インストール
+pnpm build     # 全 workspace のビルド（turbo run build）
+pnpm test      # 全 workspace のテスト + tools/ のテスト（typecheck 含む）
+pnpm lint      # eslint + prettier --check + 依存方向ルール検証
+pnpm lint:deps # 依存方向ルール検証のみ（tools/check-workspace-deps.mjs）
+pnpm format    # prettier --write
+```
+
+- TypeScript は `tsconfig.base.json`（strict + noUncheckedIndexedAccess 等）を全 workspace が継承する。`any` は ESLint でエラー。
+- 依存方向ルール（basic-design 2.2）: `packages/shared` は他 workspace に依存しない / `packages/*` は shared のみ依存可 / apps → packages のみ（逆流・横依存・apps 間依存は禁止）。`pnpm lint` で機械検証される。
+- 型契約は zod スキーマとして `packages/shared` に定義し `z.infer` で型を導出する（決定 E17）。shared に実行時 I/O（HTTP / DB / LLM）を追加しない。
 
 ## プロジェクト概要（README.md より）
 
