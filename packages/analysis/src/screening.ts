@@ -32,6 +32,7 @@ import {
   type SignalRecord,
 } from "./inputs.js";
 import { ageInDays, DAY_MS, scoreSignal } from "./scoring.js";
+import { compareStrings } from "./internal/compare.js";
 import { anyIncludes, normalizeForMatch } from "./internal/text-match.js";
 
 const companiesSchema = z.array(companyRecordSchema);
@@ -151,7 +152,7 @@ export function runScreeningSearch(input: ScreeningInput): ScreeningSearchRespon
 
     // 根拠は新しい順（同時刻は signalId 昇順）で返す — 決定的な全順序
     matchedSignals.sort(
-      (a, b) => b.collectedAtMs - a.collectedAtMs || a.signal.id.localeCompare(b.signal.id),
+      (a, b) => b.collectedAtMs - a.collectedAtMs || compareStrings(a.signal.id, b.signal.id),
     );
     const evidence: MatchedSignal[] = matchedSignals.map(({ signal }) => ({
       signalId: signal.id,
@@ -176,7 +177,7 @@ export function runScreeningSearch(input: ScreeningInput): ScreeningSearchRespon
   }
 
   // score 降順 → company.id 昇順の全順序（入力順に依存しない決定的な並び）
-  matched.sort((a, b) => b.score - a.score || a.company.id.localeCompare(b.company.id));
+  matched.sort((a, b) => b.score - a.score || compareStrings(a.company.id, b.company.id));
 
   return {
     results: matched.slice(0, request.limit),

@@ -19,6 +19,7 @@
 // kind 優先度昇順 → fetchedAt 降順（新しい順）→ 正規化 URL 昇順。入力順に依存しない。
 import { z } from "zod";
 import { classifyPageKind, PAGE_KIND_PRIORITY, type CollectedPageKind } from "./classify.js";
+import { compareStrings } from "./internal/compare.js";
 import { collectedPageSchema, type CollectedPage } from "./inputs.js";
 
 const collectedPagesSchema = z.array(collectedPageSchema);
@@ -86,7 +87,7 @@ export function prepareDossierSources(pages: readonly CollectedPage[]): DossierS
     (a, b) =>
       PAGE_KIND_PRIORITY[a.kind] - PAGE_KIND_PRIORITY[b.kind] ||
       b.fetchedAtMs - a.fetchedAtMs ||
-      a.url.localeCompare(b.url),
+      compareStrings(a.url, b.url),
   );
 
   return sources.map(({ fetchedAtMs: _fetchedAtMs, ...source }) => source);
