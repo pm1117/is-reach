@@ -33,7 +33,7 @@ description: >
 
 ### 4. 設計整合
 
-- `docs/architecture.md` / `docs/detailed-design.md` との乖離がないか
+- `docs/basic-design.md` / `docs/design-detail.md` との乖離がないか
 - 1 PR = 1 関心事を守っているか（`docs/pr-plan.md` と照合）
 - テストが実装と同じ PR に含まれているか
 

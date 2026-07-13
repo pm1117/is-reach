@@ -16,8 +16,8 @@ description: >
 | # | フェーズ | 担当 agent | 成果物 | ゲート |
 |---|----------|-----------|--------|--------|
 | 1 | 要件定義 | architect | `docs/requirements.md` | 人間が OK |
-| 2 | 基本設計 | architect | `docs/architecture.md` | 人間が OK |
-| 3 | 詳細設計 | architect + ui-designer | `docs/detailed-design.md` / `docs/ui-spec.md` | 人間が OK |
+| 2 | 基本設計 | architect | `docs/basic-design.md` | 人間が OK |
+| 3 | 詳細設計 | architect + ui-designer | `docs/design-detail.md` / `docs/ui-spec.md` | 人間が OK |
 | 4 | PR 分割計画 | orchestrator（本 skill） | `docs/pr-plan.md` | 人間が OK |
 | 5 | 実装 | feature-dev（+ reviewer） | コード + テスト | PR ごとにレビュー・マージ |
 

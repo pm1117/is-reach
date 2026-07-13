@@ -6,7 +6,7 @@
 
 | Skill | 使うタイミング | 成果物 |
 |-------|----------------|--------|
-| `software-architecture` | 要件定義・基本設計・詳細設計・データモデル | `docs/requirements.md` / `docs/architecture.md` / `docs/detailed-design.md` |
+| `software-architecture` | 要件定義・基本設計・詳細設計・データモデル | `docs/requirements.md` / `docs/basic-design.md` / `docs/design-detail.md` |
 | `frontend-design` | 画面・UI 方針 | `docs/ui-spec.md` |
 | `subagent-driven-development` | 実装・型・エラー処理・テスト | コード + テスト |
 | `reviewer-agent` | PR レビュー・品質・セキュリティ検証 | レビューコメント |
