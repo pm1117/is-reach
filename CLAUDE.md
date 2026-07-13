@@ -16,12 +16,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 開発体制: サブエージェント駆動開発
 
-README.md では、開発を以下の役割分担で進めることが定義されています。タスクに応じて対応する役割の観点で作業してください:
+進め方の詳細は `docs/agent-driven-development.md`、人間向け索引は `docs/SKILLS.md` を参照。
 
-- **Architect**（software-architecture, brainstorming）: 全体設計、データモデリング、モノレポ構成の定義
-- **UI/UX Designer Agent**（frontend-design）: PC 向け管理画面、高忠実度 UI コンポーネント、Tailwind CSS の実装方針策定
-- **Feature Dev Agent**（subagent-driven-development）: 各機能（スクレイピング、分析、LLM プロンプト生成）の具体的な実装
-- **Reviewer Agent**（GitHub Actions と連携）: コードの品質、型安全、セキュリティ（プロンプトインジェクション対策など）の自動検証
+### フェーズゲート
+
+要件定義 → 基本設計 → 詳細設計 → PR 分割計画 → 実装 の順に進め、各フェーズは**人間の承認**を得てから次へ進む（勝手に飛ばさない）。進行管理は `is-reach-orchestrator` skill に従う。
+
+### タスク ↔ agent / skill 対応表
+
+| タスク | Agent（`.claude/agents/`） | Skill（`.claude/skills/`） | 実装コード |
+|--------|---------------------------|---------------------------|------------|
+| 要件・設計・データモデル・モノレポ境界 | `architect` | `software-architecture` | 禁止（docs のみ） |
+| 画面・UI 方針（PC 管理画面、Tailwind） | `ui-designer` | `frontend-design` | 原則禁止 |
+| 機能実装・テスト | `feature-dev` | `subagent-driven-development` | 許可 |
+| レビュー・品質・セキュリティ検証 | `reviewer` | `reviewer-agent` | 禁止（指摘のみ） |
+
+### PR 分割方針
+
+1 PR = 1 関心事。分割計画は `docs/pr-plan.md`（orchestrator skill 参照）。
 
 ## セキュリティ上の注意
 

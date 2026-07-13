@@ -209,13 +209,25 @@ Claude は自動読込しないので、次のどちらかにする。
 ```markdown
 # Skills Index
 
+ディレクトリ作成
+mkdir -p .claude/agents .claude/skills
+
 | Skill | 使うタイミング | 成果物 |
 |-------|----------------|--------|
 | software-architecture | 設計・データモデル | docs/architecture.md |
 | frontend-design | 画面・UI方針 | docs/ui-spec.md |
-| clean-coder | 実装・型・エラー処理 | コード + テスト |
+| clean-coder(subagent-driven-development) | 実装・型・エラー処理 | コード + テスト |
 | reviewer-agent | PRレビュー・品質 | レビューコメント |
 | is-reach-orchestrator | フェーズ進行・PR分割 | docs/pr-plan.md など |
+```
+
+```
+1. プラグインの追加コマンドを実行
+/plugin marketplace add anthropic/claude-plugins-official
+Discover画面からexample-skillsダウンロード（内包されている）。
+
+2. 使い方
+/frontend-design 〇〇のランディングページを作って
 ```
 
 ### 3.3 更新タイミング
