@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## リポジトリの現状
 
-このリポジトリは初期段階（グリーンフィールド）です。現時点ではコード・ビルド設定・テスト基盤は存在せず、README.md のみがあります。ビルド／リント／テストコマンドは、実装が追加された時点でこのファイルに追記してください。
+実装コードは未着手（フェーズ5 で着手）。設計ドキュメント（`docs/requirements.md` → `basic-design.md` → `design-detail.md` / `ui-spec.md` → `pr-plan.md`）は承認済みで、`.claude/`（skills・agents）と GitHub Actions（Claude 自動レビュー）が整備済み。ビルド／リント／テストコマンドは PR1（モノレポ土台）で確定した時点でこのファイルに追記してください。
 
 ## プロジェクト概要（README.md より）
 
@@ -33,7 +33,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### PR 分割方針
 
-1 PR = 1 関心事。分割計画は `docs/pr-plan.md`（orchestrator skill 参照）。
+1 PR = 1 関心事。分割計画は `docs/pr-plan.md`（承認済み。orchestrator skill 参照）。実装 PR は同計画の依存順（shared → crawler/analysis/prompt → api → web → e2e）に従う。
+
+### GitHub 自動レビュー
+
+- PR の作成・更新時に `.github/workflows/claude-code-review.yml` が差分を自動レビューする（マージゲート）。ローカル `reviewer` agent は実装前・実装中のレビューを担当し、役割分担する（`docs/agent-driven-development.md` 4 章）
+- PR / Issue コメントで `@claude` をメンションすると対話型 workflow（`.github/workflows/claude.yml`）が応答する
+- レビュー観点（プロンプトインジェクション対策・型安全・パッケージ境界）は本ファイルと `reviewer-agent` skill に従う
 
 ## セキュリティ上の注意
 
