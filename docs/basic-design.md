@@ -5,7 +5,7 @@
 - 前提: `docs/requirements.md`（要件定義書）の承認済みであること。本書は要件定義書の全決定事項（A1〜C4）と整合するように設計している。
   - 注意: 本書作成時点で `docs/requirements.md` のファイル上のステータス表記は「草案」のままである。承認済みであればステータス表記の更新を推奨する（→ 10. 承認）。
 - 本書では確定した事項を「**決定**」、未確定の前提を「**仮置き**」と明記して区別する。
-- 本書の承認をもってフェーズ3（詳細設計 `docs/detailed-design.md`）へ進む。承認前に詳細設計・実装には着手しない。
+- 本書の承認をもってフェーズ3（詳細設計 `docs/design-detail.md`）へ進む。承認前に詳細設計・実装には着手しない。
 
 ---
 
@@ -136,7 +136,7 @@ erDiagram
 
 - テナント資産テーブルは**すべて `tenant_id` 列を持ち、Postgres Row Level Security の対象**とする（→ 7 章）。
 - 個人情報（役員名等）を含み得るデータ（Signal・深掘り収集データ・Dossier）は**出典 URL を必須**とし、`shared` の型契約レベルで強制する（要件 6.3 → 8.2）。
-- SQL DDL・インデックス設計・具体的な RLS ポリシー定義は詳細設計（`docs/detailed-design.md`）で行う。
+- SQL DDL・インデックス設計・具体的な RLS ポリシー定義は詳細設計（`docs/design-detail.md`）で行う。
 
 ---
 
@@ -424,4 +424,4 @@ flowchart LR
 - [x] 本基本設計書の承認（承認者: Mika Suzuki、2026-07-13）
 - [x] （確認）前フェーズ `docs/requirements.md` が承認済みであること
 
-承認後、フェーズ3（詳細設計 `docs/detailed-design.md`）に着手する。
+承認後、フェーズ3（詳細設計 `docs/design-detail.md`）に着手する。
