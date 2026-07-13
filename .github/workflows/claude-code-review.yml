@@ -3,25 +3,13 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
-    # Optional: Only run on specific file changes
-    # paths:
-    #   - "src/**/*.ts"
-    #   - "src/**/*.tsx"
-    #   - "src/**/*.js"
-    #   - "src/**/*.jsx"
 
 jobs:
   claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      # レビューコメントの投稿に write が必要（read のままだとレビューが no-op になる）
+      # コメント投稿に write が必要
       pull-requests: write
       issues: read
       id-token: write
@@ -30,20 +18,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
+      # code-review プラグインは内部で Task ツール（並列サブエージェント）を使い、
+      # Actions 環境では自動拒否されて no-op になる既知問題があるため使わない
+      # （anthropics/claude-code#32459, anthropics/claude-code-action#1087）。
+      # 素の prompt + gh pr comment 直接投稿方式（公式ドキュメント推奨）を採用する。
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
-          plugins: 'code-review@claude-code-plugins'
-          prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
-          # コメント投稿ツールの明示許可が無いと投稿が全拒否され no-op になる
-          # （PR #5 / #7 で permission_denials を実測。permissions: write とセットで必要）
-          claude_args: |
-            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"
-          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-          # or https://code.claude.com/docs/en/cli-reference for available options
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
 
+            この PR の差分をレビューし、結果を必ず GitHub PR コメントとして投稿してください。
+
+            ## レビュー観点（リポジトリの CLAUDE.md・docs/design-detail.md と整合させること）
+            1. ロジックバグ・エッジケース（null/境界値/競合・エラー処理の漏れ）
+            2. 型安全性（any の混入、unsafe cast、zod スキーマと型の乖離）
+            3. セキュリティ — 特にプロンプトインジェクション対策:
+               外部由来テキストの信頼境界（UntrustedText）を破っていないか、
+               サニタイズ・出力検証（design-detail 3.3 S1〜S5 / 3.5 V1〜V6）との整合
+            4. パッケージ境界（basic-design 2.2）: apps→packages のみ / packages 横依存禁止 /
+               LLM は packages/prompt のみ / 外部 HTTP は packages/crawler のみ
+            5. 既存コードとの互換性・テストの妥当性（境界値・異常系の欠け）
+
+            ## 投稿要件
+            - 指摘は重要度順（blocker / should-fix / nit）に file:line 参照付きで列挙
+            - nit は 5 件以内に絞る
+            - 問題がなければ「blocker なし」と明記した要約を投稿する（無言で終えない）
+            - 結果は 1 つのコメントにまとめ、`gh pr comment` で投稿する
+          claude_args: |
+            --max-turns 25
+            --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git diff:*),Bash(git log:*),Read,Grep,Glob"
