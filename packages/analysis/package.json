@@ -1,0 +1,30 @@
+{
+  "name": "@is-reach/analysis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "スクリーニング（フィルタ + ルールベーススコア — LLM 不使用・要件 F1）と深掘り収集結果の前処理（kind 分類・重複除去・ソース優先度順 — design-detail 3.3 S5）。外部サイトアクセス・LLM 呼び出し・DB アクセスはしない（basic-design 2.1）。",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "pnpm run typecheck && vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@is-reach/shared": "workspace:*",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}
