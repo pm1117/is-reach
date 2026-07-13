@@ -433,6 +433,41 @@ docs/design-detail.md と docs/ui-spec.md を作成する。
 3. PR 作成 → GitHub Claude 自動レビュー
 4. 指摘修正 → 人間がマージ
 
+### プロンプト例
+```text
+is-reach-orchestrator に従って進めて。
+いまはフェーズ4（PR 分割計画）のみ。実装コード・PR 作成は禁止。
+前提:
+- docs/requirements.md / docs/basic-design.md は承認済み
+- docs/design-detail.md / docs/ui-spec.md も承認済み
+成果物: docs/pr-plan.md
+担当: orchestrator（architect / feature-dev には委譲しない）
+進め方:
+1. design-detail / ui-spec / basic-design のパッケージ境界と依存関係を要約する
+2. agent-driven-development 7章・orchestrator の PR0〜PR7 を出発点に、
+   このリポジトリ向けに調整した分割案を提示する（勝手に実装に入らない）
+3. 各 PR について以下を表形式で書く:
+   - 目的（1関心事）
+   - 含むパス / 含まないパス
+   - 依存する先行 PR
+   - 受け入れ条件（Done の定義）
+   - 主なテスト観点
+4. 依存の向き（shared → crawler/analysis/prompt → api → web → e2e）を崩さない
+5. 終わったら承認ポイントを箇条書きで報告し、私の OK を待つ
+必ず含めること:
+- PR0: .claude/ skills・agents、CLAUDE.md、GitHub Actions（レビュー用）
+- PR1: モノレポ土台（pnpm/turborepo、packages/shared 型）
+- PR2〜PR4: crawler / analysis / prompt（prompt は注入対策必須）
+- PR5: apps/api パイプライン接続
+- PR6: apps/web 管理画面（ui-spec 準拠）
+- PR7: E2E / 運用ドキュメント
+- 詳細設計で決めた仮置き・決定（E1〜等）がどの PR に落ちるかの対応表
+書かないこと:
+- 実装コード
+- 設計書の再発明（参照のみ）
+- 承認前の実装着手
+```
+
 ---
 
 ## 8. Cursor と Claude Code を併用する場合
