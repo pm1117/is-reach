@@ -79,7 +79,9 @@ const INT_ENV_PATTERN = /^\d+$/;
 
 /**
  * 環境変数から PromptConfig を組み立てる（外部入力のためスキーマ検証してから返す）。
- * 数値系の環境変数が整数でない場合は ZodError（VALIDATION 失敗）を投げる。
+ * 失敗時の挙動（呼び出し側 = apps/api は起動時致命エラーとして扱うこと）:
+ * - 数値系の環境変数が正の整数でない場合: 対象キー名を含むメッセージ付きの Error
+ * - スキーマ検証（範囲・型）に失敗した場合: ZodError
  */
 export function promptConfigFromEnv(env: Record<string, string | undefined>): PromptConfig {
   const raw: {
