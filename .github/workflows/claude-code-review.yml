@@ -21,7 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
+      # レビューコメントの投稿に write が必要（read のままだとレビューが no-op になる）
+      pull-requests: write
       issues: read
       id-token: write
 
