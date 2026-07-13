@@ -19,16 +19,15 @@
 //
 // トークンは完全一致で照合する（部分一致だと "roundabout" が about に誤ヒットするため）。
 // 語彙は定数として一箇所に置き、追加・調整はこのファイルだけで済むようにする。
-import { z } from "zod";
+import { externalDataKindSchema } from "@is-reach/shared";
+import type { z } from "zod";
 import { normalizeForMatch } from "./internal/text-match.js";
 
-// NOTE: この enum は design-detail 3.2 の kind の部分集合であり、analysis → apps/api → prompt を
-// 跨ぐパイプライン契約になりうる。PR4（packages/prompt）が external_data の kind
-// （corporate_site / news / recruit / article / signal / dossier）を定義する際に二重定義と
-// なる場合は、ページ系 4 値の enum を packages/shared へ昇格する follow-up を提案すること
-// （basic-design 2.1「型契約の唯一の置き場 = shared」。PR3 のスコープは packages/analysis のみの
-// ため本 PR では shared を変更しない）。
-export const collectedPageKindSchema = z.enum(["corporate_site", "news", "recruit", "article"]);
+// design-detail 3.2 の kind（shared の externalDataKindSchema — PR4 で追加）のうち
+// ページ分類で使う 4 値。signal（Signal 本文）と dossier（生成物の再入力）は prompt 側で
+// 付与するものでページ分類の対象外のため除外する。shared の enum から導出することで
+// 二重定義を避ける（basic-design 2.1「型契約の唯一の置き場 = shared」。PR3 の申し送り対応）。
+export const collectedPageKindSchema = externalDataKindSchema.exclude(["signal", "dossier"]);
 export type CollectedPageKind = z.infer<typeof collectedPageKindSchema>;
 
 /**
