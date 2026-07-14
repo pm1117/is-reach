@@ -50,6 +50,8 @@ jobs:
             - nit は 5 件以内に絞る
             - 問題がなければ「blocker なし」と明記した要約を投稿する（無言で終えない）
             - 結果は 1 つのコメントにまとめ、`gh pr comment` で投稿する
+          # max-turns 25 では大きめ PR（例: PR #14 = num_turns 27）でコメント投稿前に
+          # 打ち切られたため 60 に引き上げ
           claude_args: |
-            --max-turns 25
+            --max-turns 60
             --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git diff:*),Bash(git log:*),Read,Grep,Glob"
