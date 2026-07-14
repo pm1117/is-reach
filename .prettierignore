@@ -10,3 +10,5 @@ pnpm-lock.yaml
 *.md
 .claude/
 .github/
+.next/
+out/

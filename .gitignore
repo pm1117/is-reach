@@ -18,3 +18,9 @@ coverage/
 .firecrawl/
 .DS_Store
 *.log
+
+.env
+
+# Next.js
+.next/
+out/
