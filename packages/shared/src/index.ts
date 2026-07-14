@@ -13,3 +13,4 @@ export * from "./template.js";
 export * from "./deletion.js";
 export * from "./untrusted-text.js";
 export * from "./queue.js";
+export * from "./me.js";

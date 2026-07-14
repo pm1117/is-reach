@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/*
+ * セマンティックカラートークン（ui-spec 3.3 — 決定 U4）
+ *
+ * - `--color-*: initial` で Tailwind 既定パレットを全消去し、raw カラー
+ *   （red-500 / bg-blue-600 等）のユーティリティをビルドレベルで存在させない。
+ *   （加えて ESLint（ルート eslint.config.mjs の apps/web ブロック）でも
+ *   raw カラークラス文字列の使用を禁止している — 二重の担保）
+ * - トークン名は primary / danger / warning / success / neutral の 5 系統。
+ *   primary〜success は DEFAULT / hover / subtle（淡い背景用） / on（その色の上の文字色）
+ *   の派生構造、neutral は 0〜900 のスケール + 同派生構造を持つ。
+ *
+ * ※ 実値はすべて【仮値】（青系 / 赤系 / 黄橙系 / 緑系 / グレー系）。
+ *   人間の承認を経て調整する（ui-spec 9 章 仮置き「カラー実値・派生構造」/ pr-plan PR6a）。
+ */
+@theme {
+  --color-*: initial;
+
+  /* primary: 主要アクション・リンク・選択状態（仮値: 青系） */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-subtle: #eff6ff;
+  --color-primary-on: #ffffff;
+
+  /* danger: 削除・失敗状態・破壊的操作（仮値: 赤系） */
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
+  --color-danger-subtle: #fef2f2;
+  --color-danger-on: #ffffff;
+
+  /* warning: 検証警告フラグ・根拠なし・注意喚起（仮値: 黄橙系） */
+  --color-warning: #d97706;
+  --color-warning-hover: #b45309;
+  --color-warning-subtle: #fffbeb;
+  --color-warning-on: #ffffff;
+
+  /* success: 完了・保存成功・「返信あり」（仮値: 緑系） */
+  --color-success: #16a34a;
+  --color-success-hover: #15803d;
+  --color-success-subtle: #f0fdf4;
+  --color-success-on: #ffffff;
+
+  /* neutral: テキスト・ボーダー・背景の段階（仮値: グレー系スケール 0〜900） */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
+  --color-neutral: #6b7280;
+  --color-neutral-hover: #4b5563;
+  --color-neutral-subtle: #f3f4f6;
+  --color-neutral-on: #ffffff;
+
+  /*
+   * タイポグラフィ: 日本語 UI 前提のシステムフォントスタック
+   * （ui-spec 3.3 仮置き。Web フォントは導入しない）
+   */
+  --font-sans:
+    system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/*
+ * 本文標準は text-sm（情報密度優先 — ui-spec 3.3。スペーシングは Tailwind 標準
+ * 4px スケールをそのまま使い、独自スケールは追加しない）
+ */
+@layer base {
+  body {
+    @apply bg-neutral-50 text-sm text-neutral-900 antialiased;
+  }
+}
