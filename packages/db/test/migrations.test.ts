@@ -30,12 +30,12 @@ describe("マイグレーションの再現性", () => {
       const applied = await applyMigrations(migrator);
       expect(applied.length).toBeGreaterThanOrEqual(6);
 
-      // テナント資産 10 + 共有資産 2 = 12 テーブル
+      // テナント資産 11（10 + message_jobs — 20260714000700）+ 共有資産 2 = 13 テーブル
       const tables = await migrator.query<{ relname: string }>(
         `select relname from pg_class
          where relnamespace = 'public'::regnamespace and relkind = 'r' order by relname`,
       );
-      expect(tables.rowCount).toBe(12);
+      expect(tables.rowCount).toBe(13);
 
       // 全テナント資産テーブルに ENABLE + FORCE RLS と tenant_isolation ポリシー
       const rls = await migrator.query<{ relname: string }>(

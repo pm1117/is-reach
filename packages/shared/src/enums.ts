@@ -5,6 +5,18 @@ import { z } from "zod";
 export const roleSchema = z.enum(["admin", "member"]);
 export type Role = z.infer<typeof roleSchema>;
 
+/** テナントの状態（DB: tenants.status の CHECK と整合 — 20260714000300） */
+export const tenantStatusSchema = z.enum(["active", "suspended"]);
+export type TenantStatus = z.infer<typeof tenantStatusSchema>;
+
+/**
+ * ユーザーの招待・在籍状態（DB: users.invitation_status の CHECK と整合）。
+ * disabled は DELETE /users/:userId（無効化 — design-detail 2.2）の結果状態
+ * （20260714000700 で CHECK に追加）。
+ */
+export const invitationStatusSchema = z.enum(["invited", "active", "disabled"]);
+export type InvitationStatus = z.infer<typeof invitationStatusSchema>;
+
 /** リストエントリのステータス（要件 F5） */
 export const entryStatusSchema = z.enum(["not_started", "generated", "sent", "replied"]);
 export type EntryStatus = z.infer<typeof entryStatusSchema>;
