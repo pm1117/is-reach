@@ -59,6 +59,24 @@
   --color-neutral-on: #ffffff;
 
   /*
+   * 不定プログレスバー用アニメーション（ui-spec 4.5 — 決定）。
+   * パーセント表示をしないため、位置が進捗率を示唆しない往路のみの流れ表現とする。
+   * レイアウト誘発を避けるため transform で動かす。translateX の % は要素自身の幅基準のため、
+   * 250% = 親幅 100% ÷ バー幅 40%（progress-bar.tsx の w-2/5 と対で変更する）。
+   * 利用箇所は components/ui/progress-bar.tsx のみ。
+   */
+  --animate-progress-indeterminate: progress-indeterminate 1.5s ease-in-out infinite;
+
+  @keyframes progress-indeterminate {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(250%);
+    }
+  }
+
+  /*
    * タイポグラフィ: 日本語 UI 前提のシステムフォントスタック
    * （ui-spec 3.3 仮置き。Web フォントは導入しない）
    */
