@@ -29,13 +29,14 @@ declare module "vitest" {
   }
 }
 
-/** RLS 対象のテナント資産テーブル（design-detail 6.1 — 全 10 テーブル） */
+/** RLS 対象のテナント資産テーブル（design-detail 6.1 の 10 テーブル + message_jobs — 20260714000700） */
 export const TENANT_TABLES = [
   "tenants",
   "users",
   "company_lists",
   "list_entries",
   "deep_dive_jobs",
+  "message_jobs",
   "collected_documents",
   "dossiers",
   "templates",

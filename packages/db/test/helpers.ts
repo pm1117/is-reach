@@ -99,6 +99,7 @@ export interface TenantFixture {
   dossierId: string;
   templateId: string;
   messageId: string;
+  messageJobId: string;
   auditLogId: string;
 }
 
@@ -187,6 +188,12 @@ export async function seedTenantFixture(
                '本文全体', '{"ok":true,"warnings":[]}', 'claude-haiku-test') returning id`,
       [tenantId, listEntryId, templateId, dossierId],
     );
+    const messageJobId = await insertReturningId(
+      client,
+      `insert into message_jobs (tenant_id, list_entry_id, template_id, created_by, state, message_id)
+       values ($1, $2, $3, $4, 'done', $5) returning id`,
+      [tenantId, listEntryId, templateId, userId, messageId],
+    );
     const auditLogId = await insertReturningId(
       client,
       `insert into audit_logs (tenant_id, actor_user_id, event_type, resource_type, resource_id, metadata)
@@ -203,6 +210,7 @@ export async function seedTenantFixture(
       dossierId,
       templateId,
       messageId,
+      messageJobId,
       auditLogId,
     };
   });
