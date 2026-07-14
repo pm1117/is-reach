@@ -1,19 +1,31 @@
-import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+"use client";
 
-export const metadata: Metadata = { title: "メッセージ" };
+// S6 メッセージ生成・編集（ui-spec 6 章 — U7）。
+// 生成直後は messageId 未確定のため、[messageId] に特殊値 `new` +
+// `?jobId=&templateId=` で生成中モードを受ける（仮置き — message-editor-screen.tsx 参照）。
+import { Suspense } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { MessageEditorScreen } from "@/features/messages/components/message-editor-screen";
 
-// S6 メッセージ生成・編集（ui-spec 6 章 — U7）は PR6b で実装する
-export default async function MessagePage({
-  params,
-}: {
-  params: Promise<{ listId: string; entryId: string; messageId: string }>;
-}) {
-  await params;
+export default function MessagePage() {
   return (
-    <PlaceholderPage
-      title="メッセージ"
-      breadcrumbs={["リスト", "リスト詳細", "企業詳細", "メッセージ"]}
+    // useSearchParams はプリレンダー時に Suspense 境界を要求するためラップする
+    <Suspense fallback={null}>
+      <MessagePageInner />
+    </Suspense>
+  );
+}
+
+function MessagePageInner() {
+  const params = useParams<{ listId: string; entryId: string; messageId: string }>();
+  const searchParams = useSearchParams();
+  return (
+    <MessageEditorScreen
+      listId={params.listId}
+      entryId={params.entryId}
+      messageId={params.messageId}
+      jobId={searchParams.get("jobId")}
+      templateId={searchParams.get("templateId")}
     />
   );
 }

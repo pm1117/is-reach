@@ -1,14 +1,20 @@
-import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+"use client";
 
-export const metadata: Metadata = { title: "企業詳細" };
+// S5 企業詳細（ドシエ + メッセージ — ui-spec 2.3）。
+// route はパラメータ解決と feature の合成のみを担う（ui-spec 3.1 — U3）。
+// feature 間 import 禁止のため、features/dossier と features/messages の合成は
+// この route で行う（右ペインを ReactNode として渡す）。
+import { useParams } from "next/navigation";
+import { EntryDossierView } from "@/features/dossier/components/entry-dossier-view";
+import { MessageListPane } from "@/features/messages/components/message-list-pane";
 
-// S5 企業詳細（ドシエ + メッセージ）は PR6b で実装する
-export default async function EntryDetailPage({
-  params,
-}: {
-  params: Promise<{ listId: string; entryId: string }>;
-}) {
-  await params;
-  return <PlaceholderPage title="企業詳細" breadcrumbs={["リスト", "リスト詳細", "企業詳細"]} />;
+export default function EntryDetailPage() {
+  const params = useParams<{ listId: string; entryId: string }>();
+  return (
+    <EntryDossierView
+      listId={params.listId}
+      entryId={params.entryId}
+      aside={<MessageListPane listId={params.listId} entryId={params.entryId} />}
+    />
+  );
 }
