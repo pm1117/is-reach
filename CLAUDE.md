@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## リポジトリの現状
 
-実装フェーズ（フェーズ5）進行中。設計ドキュメント（`docs/requirements.md` → `basic-design.md` → `design-detail.md` / `ui-spec.md` → `pr-plan.md`）は承認済みで、`.claude/`（skills・agents）と GitHub Actions（Claude 自動レビュー）が整備済み。PR1 でモノレポ土台（pnpm workspace + Turborepo）と `packages/shared`（型契約）が導入済み。`packages/crawler` / `analysis` / `prompt`、`apps/web` / `api` は未実装（`docs/pr-plan.md` の PR2 以降）。
+実装フェーズ（フェーズ5）進行中。設計ドキュメント（`docs/requirements.md` → `basic-design.md` → `design-detail.md` / `ui-spec.md` → `pr-plan.md`）は承認済みで、`.claude/`（skills・agents）と GitHub Actions（Claude 自動レビュー）が整備済み。PR1〜PR4 でモノレポ土台と `packages/shared` / `crawler` / `analysis` / `prompt` が導入済み。PR5a で DB 基盤（`supabase/migrations/` + `packages/db` の DB テスト）が導入済み。`apps/web` / `api` は未実装（`docs/pr-plan.md` の PR5b 以降）。
 
 ## 開発コマンド
 
@@ -13,7 +13,9 @@ pnpm workspace + Turborepo のモノレポ。pnpm のバージョンはルート
 ```bash
 pnpm install   # 依存インストール
 pnpm build     # 全 workspace のビルド（turbo run build）
-pnpm test      # 全 workspace のテスト + tools/ のテスト（typecheck 含む）
+pnpm test      # 全 workspace のテスト + tools/ のテスト（typecheck 含む。DB 不要）
+pnpm test:db   # DB テスト（packages/db）。Docker 必須: Postgres 16 コンテナを起動し
+               # supabase/migrations/ を適用して RLS・権限・カスケード削除を実 DB で検証する
 pnpm lint      # eslint + prettier --check + 依存方向ルール検証
 pnpm lint:deps # 依存方向ルール検証のみ（tools/check-workspace-deps.mjs）
 pnpm format    # prettier --write
@@ -22,6 +24,14 @@ pnpm format    # prettier --write
 - TypeScript は `tsconfig.base.json`（strict + noUncheckedIndexedAccess 等）を全 workspace が継承する。`any` は ESLint でエラー。
 - 依存方向ルール（basic-design 2.2）: `packages/shared` は他 workspace に依存しない / `packages/*` は shared のみ依存可 / apps → packages のみ（逆流・横依存・apps 間依存は禁止）。`pnpm lint` で機械検証される。
 - 型契約は zod スキーマとして `packages/shared` に定義し `z.infer` で型を導出する（決定 E17）。shared に実行時 I/O（HTTP / DB / LLM）を追加しない。
+
+## DB（Supabase Postgres）の規約
+
+- マイグレーションは `supabase/migrations/`（Supabase CLI 規約の番号付き SQL）。enum 値は `packages/shared` の zod enum を唯一の正とし、DDL 側は text + CHECK 制約で追随させる。
+- **テナントデータのクエリに Supabase の `service_role` キーを使わない**（RLS をバイパスするため — design-detail 6.1 決定 E14）。apps/api / ワーカーは専用ロール `app_user`（BYPASSRLS なし）で接続し、トランザクション先頭で `set_config('app.tenant_id', <uuid>, true)` を実行してから同一トランザクション内でクエリする。未設定時は RLS が fail-closed（全行不可）。
+- 共有資産（companies / signals）の書き込みとマイグレーション・pg-boss 管理は `app_batch` ロールのみ。`audit_logs` は追記専用（app_user に UPDATE / DELETE 権限がない）。`tenants` への app_user 権限は SELECT / UPDATE のみ（DELETE はカスケードで監査ログ消去経路になるため付与しない）。
+- public スキーマにテーブルを追加するマイグレーションでは、`anon` / `authenticated` からの権限剥奪（存在チェック付き REVOKE）を同梱する（Supabase の default privileges で自動 GRANT され得るため）。
+- DB スキーマ変更時は `packages/db` の DB テスト（`pnpm test:db`）を必ず更新・実行する。
 
 ## プロジェクト概要（README.md より）
 
