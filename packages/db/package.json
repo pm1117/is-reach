@@ -1,0 +1,18 @@
+{
+  "name": "@is-reach/db",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DB 基盤（supabase/migrations/）の実 Postgres テスト専用 workspace（実行時コードなし）。RLS のテナント分離・fail-closed・権限・カスケード削除を Docker 上の Postgres 16 で検証する。`pnpm test` では実行されず、`pnpm test:db`（Docker 必須）で実行する。",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:db": "pnpm run typecheck && vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.15.0",
+    "pg": "^8.16.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}

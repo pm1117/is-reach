@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test && vitest run",
+    "test:db": "pnpm --filter @is-reach/db run test:db",
     "lint": "eslint . && prettier --check . && node tools/check-workspace-deps.mjs",
     "lint:deps": "node tools/check-workspace-deps.mjs",
     "format": "prettier --write ."
