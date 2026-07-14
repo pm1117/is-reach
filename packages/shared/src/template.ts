@@ -16,7 +16,26 @@ export const templateSchema = z.object({
     .number()
     .int({ error: "maxLength は整数で指定してください" })
     .min(1, { error: "maxLength は 1 以上で指定してください" }),
-  createdBy: uuidSchema,
+  /** 作成者（ユーザー削除後は null — DB: ON DELETE SET NULL。2.3 の string から追随） */
+  createdBy: uuidSchema.nullable(),
   updatedAt: isoDateTimeSchema,
 });
 export type Template = z.infer<typeof templateSchema>;
+
+/** POST /templates（作成 — 管理者のみ E3）。id・createdBy・updatedAt はサーバー側で決まる */
+export const createTemplateRequestSchema = templateSchema.pick({
+  name: true,
+  introduction: true,
+  cta: true,
+  tone: true,
+  maxLength: true,
+});
+export type CreateTemplateRequest = z.infer<typeof createTemplateRequestSchema>;
+
+/** PATCH /templates/:templateId（編集 — 管理者のみ E3。少なくとも 1 項目必須） */
+export const updateTemplateRequestSchema = createTemplateRequestSchema
+  .partial()
+  .refine((value) => Object.values(value).some((v) => v !== undefined), {
+    error: "変更する項目を 1 つ以上指定してください",
+  });
+export type UpdateTemplateRequest = z.infer<typeof updateTemplateRequestSchema>;

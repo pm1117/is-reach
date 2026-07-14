@@ -65,3 +65,12 @@ export const screeningSearchResponseSchema = z.object({
   total: z.number().int().min(0),
 });
 export type ScreeningSearchResponse = z.infer<typeof screeningSearchResponseSchema>;
+
+/** GET /screening/facets — 検索条件の選択肢メタ（design-detail 2.2。共有プールの実在値 + enum） */
+export const screeningFacetsResponseSchema = z.object({
+  industries: z.array(z.string()),
+  employeeRanges: z.array(z.string()),
+  regions: z.array(z.string()),
+  signalKinds: z.array(signalKindSchema),
+});
+export type ScreeningFacetsResponse = z.infer<typeof screeningFacetsResponseSchema>;

@@ -71,7 +71,12 @@ export type MessageJob = z.infer<typeof messageJobSchema>;
 export const messageSchema = z.object({
   id: uuidSchema,
   listEntryId: uuidSchema,
-  templateId: uuidSchema,
+  /**
+   * design-detail 2.3 では string だが、テンプレート削除（管理者に許可 — E3）後も
+   * 生成済みメッセージを残すため null を許容する（DB: ON DELETE SET NULL —
+   * 20260714000300 の messages.template_id 申し送りへの追随）
+   */
+  templateId: uuidSchema.nullable(),
   dossierId: uuidSchema,
   /** basic-design 5: 骨子（機械埋め込み）とパーソナライズ（LLM 生成）の区別を保持する */
   parts: z.object({
@@ -98,3 +103,9 @@ export const messageSchema = z.object({
   editedAt: isoDateTimeSchema.nullable(),
 });
 export type Message = z.infer<typeof messageSchema>;
+
+/** PATCH /messages/:messageId（編集後本文の保存 — E3: メンバーも可） */
+export const updateMessageRequestSchema = z.object({
+  editedBody: z.string().min(1, { error: "編集後本文は必須です" }),
+});
+export type UpdateMessageRequest = z.infer<typeof updateMessageRequestSchema>;
