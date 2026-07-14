@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { TemplatesScreen } from "@/features/templates/components/templates-screen";
 
 export const metadata: Metadata = { title: "テンプレート" };
 
-// S7 テンプレート管理は PR6b で実装する（閲覧は全員・変更ボタンは管理者のみ表示 — E3/U9）
+// S7 テンプレート管理（閲覧は全員・変更ボタンは管理者のみ表示 — E3/U9）。ルートは結線のみ
 export default function TemplatesPage() {
-  return <PlaceholderPage title="テンプレート" />;
+  return <TemplatesScreen />;
 }
